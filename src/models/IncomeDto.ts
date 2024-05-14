@@ -12,7 +12,7 @@ export type IncomePost = {
     description: string;
     date: Date;
     category: string;
-    user_id: string;
+    userId: string;
 };
 
 export type IncomeChart = {

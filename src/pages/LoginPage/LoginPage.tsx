@@ -26,7 +26,8 @@ const LoginPage = (props: Props) => {
 
   const handleLogin = (form: LoginFormsInputs) => {
     try{
-      loginUser(form as unknown as LoginRequest);
+      const req: LoginRequest = { email: form.userName, password: form.password };
+      loginUser(req);
     }
     catch(e){
       console.log(e);
@@ -49,11 +50,11 @@ const LoginPage = (props: Props) => {
                   htmlFor="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Username
-                </label>
+                  Email
+                </label>  
                 <input
                   type="text"
-                  id="username"
+                  id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Username"
                   {...register("userName")}
@@ -101,7 +102,7 @@ const LoginPage = (props: Props) => {
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Don’t have an account yet?{" "}
                 <a
-                  href="#"
+                  href="/register"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Sign up

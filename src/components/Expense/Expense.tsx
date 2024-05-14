@@ -1,10 +1,11 @@
 import React from 'react'
+import ExpenseCreate from './ExpenseCreate/ExpenseCreate'
 
 type Props = {}
 
 const Expense = (props: Props) => {
   return (
-    <div>Expense</div>
+    <ExpenseCreate />
   )
 }
 

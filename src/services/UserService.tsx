@@ -1,14 +1,33 @@
 import axios from "axios";
+import { instance } from './axios';
 import { handleError } from "../helpers/ErrorHandler";
-import { LoginRequest, RegisterRequest} from "../models/UserDto";
+import { LoginRequest, RegisterRequest, UserGet, UserPut} from "../models/UserDto";
 import { ResponeDto } from "../models/ResponeDto";
 
-const api = "http://localhost:701/api/";
+
+instance.interceptors.request.use(
+  (config) => {
+      const accessToken = localStorage.getItem('token')
+      if (
+          !!accessToken &&
+          config.headers &&
+          !config.headers['Authorization']
+      ) {
+          config.headers['Authorization'] = `Bearer ${accessToken}`
+      }
+      return config
+  },
+  (error) => {
+      return Promise.reject(error)
+  },
+)
+const api = instance.defaults.baseURL;
+
 
 export const loginAPI = async (request : LoginRequest) => {
   try {
     const data = await axios.post<ResponeDto>(api + "auth/login", {
-      username: request.username,
+      email: request.email,
       password: request.password,
     });
     return data;
@@ -22,11 +41,9 @@ export const registerAPI = async (
 ) => {
   try {
     const data = await axios.post<ResponeDto>(api + "auth/register", {
-      email: request.username,
-      username: request.name,
+      email: request.email,
+      fullName: request.name,
       password: request.password,
-      phone: request.phone,
-      birthday: request.birthday,
     });
     return data;
   } catch (error) {
@@ -34,9 +51,9 @@ export const registerAPI = async (
   }
 };
 
-export const getUserAPI = async () => {
+export const getUserAPI = async (id:string) => {
   try {
-    const data = await axios.get<ResponeDto>(api + "user");
+    const data = (await instance.get<UserGet>(api + "user/" + id));
     return data;
   } catch (error) {
     handleError(error);
@@ -44,14 +61,13 @@ export const getUserAPI = async () => {
 };
 
 
-export const updateUserAPI = async (request: RegisterRequest) => {
+export const updateUserAPI = async (id:string, request: UserPut) => {
   try {
-    const data = await axios.put<ResponeDto>(api + "user", {
-      email: request.username,
-      username: request.name,
-      password: request.password,
-      phone: request.phone,
-      birthday: request.birthday,
+    const data = await instance.put<ResponeDto>(api + "user/" + id, {
+      email: request.email,
+      fullName: request.fullName,
+      phoneNumber: request.phoneNumber,
+      birthDay: request.birthDay,
     });
     return data;
   } catch (error) {

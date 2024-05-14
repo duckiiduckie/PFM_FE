@@ -41,13 +41,8 @@ export const UserProvider = ({ children }: Props) => {
   ) => {
     await registerAPI(registerRequest)
       .then((res) => {
-        if (res?.data.isTrue) {
-            toast.success("Register Success!");
-            navigate("/");
-        }
-        else{
-            toast.warning(res?.data.message);
-        }
+        toast.success("Register Success!");
+        navigate("/login");
       })
       .catch((e) => toast.warning("Server error occured"));
   };
@@ -97,14 +92,3 @@ export const UserProvider = ({ children }: Props) => {
 
 export const useAuth = () => React.useContext(UserContext);
 
-// import React from 'react'
-
-// type Props = {}
-
-// const useAuth = (props: Props) => {
-//   return (
-//     <div>useAuth</div>
-//   )
-// }
-
-// export default useAuth

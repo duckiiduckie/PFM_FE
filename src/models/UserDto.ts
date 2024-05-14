@@ -1,22 +1,35 @@
+import internal from "stream";
+
 export type RegisterRequest = {
-    username: string;
+    email: string;
     password: string;
-    phone: string;
     name: string;
-    birthday: Date;
 };
 
 export type LoginRequest = {
-    username: string;
+    email: string;
     password: string;
 };
 
 export type UserGet = {
-    id: string;
-    username: string;
-    phone: string;
-    name: string;
-    birthday: Date;
+    id: string
+    email: string;
+    phoneNumber: string;
+    fullName: string;
+    birthDay: string;
+};
+
+export type UserTmp = {
+    id: number;
+    email: string;
+    password: string;
+}
+
+export type UserPut = {
+    email: string;
+    phoneNumber: string;
+    fullName: string;
+    birthDay: string;
 };
 
 export type LoginResponse = {

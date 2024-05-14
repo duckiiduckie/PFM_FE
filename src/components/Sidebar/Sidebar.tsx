@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaMoneyBill, FaTable,  } from "react-icons/fa";
+import { FaHome, FaMoneyBill, FaTable, FaUser,  } from "react-icons/fa";
 import { FaTableCells } from "react-icons/fa6";
 
 interface Props {
@@ -38,6 +38,13 @@ const Sidebar = (props: Props) => {
             >
               <FaMoneyBill />
               <h6 className="ml-3">Budget</h6>
+            </Link>
+            <Link
+              to="user"
+              className="flex md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline"
+            >
+              <FaUser />
+              <h6 className="ml-3">User</h6>
             </Link>
           </div>
         </div>
