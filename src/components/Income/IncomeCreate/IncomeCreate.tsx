@@ -1,4 +1,4 @@
-import { Col, Input, Row, Form, DatePicker, notification, Button } from "antd";
+import { Col, Input, Row, Form, notification, Button } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { AxiosError } from "axios";
@@ -15,52 +15,47 @@ export interface IncomeCreate {
 }
 
 const IncomeCreate = (props: Props) => {
-  const [initIncome, setinitIncome] = useState<IncomeCreate>();
+  const [initIncome, setInitIncome] = useState<IncomeCreate>();
   const [form] = useForm<IncomeCreate>();
 
   const onFinish = async (values: IncomeCreate) => {
-
     try {
+      const updateAccountResponse = await createIncomeAPI({
+        userId: localStorage.getItem("user") as string,
+        amount: values.amount,
+        description: values.description,
+        categoryName: values.categoryName,
+        date: dayjs().toISOString(), // Change this line to ensure proper ISO format
+      } as unknown as IncomePost);
 
-        const updateAccountResponse = await createIncomeAPI(
-            {
-              userId: localStorage.getItem("user") as string,
-              amount: values.amount,
-              description: values.description,
-              categoryName: values.categoryName,
-              date: dayjs().format("YYYY-MM-DD"),
-            } as unknown as IncomePost
-        )
-
-        if (updateAccountResponse) {
-            notification.success({
-                message: ('CREATE'),
-                description: ('CREATE_INCOME_SUCCESSFULLY'),
-            })
-        }
+      if (updateAccountResponse) {
+        notification.success({
+          message: "CREATE",
+          description: "CREATE_INCOME_SUCCESSFULLY",
+        });
+      }
     } catch (error) {
-        if (error instanceof AxiosError) {
-            notification.error({
-                message: ('ERROR'),
-                description: (error.response?.data.info.message),
-            })
-        }
-      
+      if (error instanceof AxiosError) {
+        notification.error({
+          message: "ERROR",
+          description: error.response?.data.info.message,
+        });
+      }
     }
-}
-
+  };
 
   useEffect(() => {
-    setinitIncome({
+    setInitIncome({
       description: "",
       amount: 0,
-      categoryName: ""
+      categoryName: "",
     });
-  }, [localStorage.getItem("user") as string]);
+  }, [localStorage.getItem("user")]);
 
   if (!initIncome) {
-    return <h1>dang loading....</h1>;
+    return <h1>Loading...</h1>;
   }
+
   return (
     <div>
       <Form
@@ -71,21 +66,21 @@ const IncomeCreate = (props: Props) => {
           ...initIncome,
         }}
       >
-        <div className=" p-6 ">
+        <div className="p-6">
           <div className="bg-white px-6 py-6 shadow-01">
             <Row gutter={[16, 24]}>
               <Col xs={24} lg={12}>
-                <Form.Item name="amount" label={"AMOUNT"} className="mb-0">
+                <Form.Item name="amount" label="AMOUNT" className="mb-0">
                   <Input size="large" />
                 </Form.Item>
               </Col>
               <Col xs={24} lg={12}>
-                <Form.Item name="description" label={"DESCRIPTION"} className="mb-0">
+                <Form.Item name="description" label="DESCRIPTION" className="mb-0">
                   <Input size="large" />
                 </Form.Item>
               </Col>
               <Col xs={24} lg={12}>
-                <Form.Item name="categoryName" label={"CATEGORYNAME"} className="mb-0">
+                <Form.Item name="categoryName" label="CATEGORYNAME" className="mb-0">
                   <Input size="large" />
                 </Form.Item>
               </Col>
@@ -99,9 +94,9 @@ const IncomeCreate = (props: Props) => {
                     size="large"
                     type="primary"
                     htmlType="submit"
-                    className="bg-#5151E5 w-full rounded text-center text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-blue-600 "
+                    className="bg-#5151E5 w-full rounded text-center text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-blue-600"
                   >
-                    {("SAVE")}
+                    SAVE
                   </Button>
                 </Form.Item>
               </Col>

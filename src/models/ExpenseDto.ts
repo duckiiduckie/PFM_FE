@@ -1,14 +1,14 @@
-export type ExpenseGet = {
+export type ReadExpenseDto = {
     id: number;
-    user_id: string;
+    userId: string;
     amount: number;
     description: string;
     date: Date;
-    category: string;
+    categoryName: string;
 };
 
 export type ExpensePost = {
-    user_id: string;
+    userId: string;
     amount: number;
     description: string;
     date: Date;
@@ -20,15 +20,23 @@ export type ExpenseChart = {
     date: Date;
 }
 
-export type CategoryGet = {
+export type CategoryDto = {
     id: number;
     name: string;
-    user_id: string;
-    expenses: ExpenseGet[];
+    userId: string;
+    expenses: ReadExpenseDto[];
+};
+
+export type CategoryBudgetDto = {
+    id: number;
+    name: string;
+    userId: string;
+    usedAmount: number;
+    expenses: ReadExpenseDto[];
 };
 
 export type CategoryPost = {
-    user_id: string;
+    userId: string;
     name: string;
 };
 

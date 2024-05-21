@@ -4,43 +4,40 @@ import { useAuth } from "../../contexts/useAuth";
 interface Props {}
 
 const Navbar = (props: Props) => {
-  const { isLoggedIn, userId, logout } = useAuth();
+  const { isLoggedIn, userName, logout } = useAuth();
   return (
-    <nav className="relative container mx-auto p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-20">
-            <Link to="/">
-                Duckie
-            </Link>
-          <div className="hidden font-bold lg:flex">
-            <Link to="/search" className="text-black hover:text-darkBlue">
-                Search
-            </Link>
-          </div>
+    <nav className="bg-yellow-100 shadow-md py-4">
+      <div className="container mx-auto flex items-center justify-between px-6">
+        <div className="flex items-center space-x-8">
+          <Link to="/" className="text-2xl font-bold text-yellow-500">
+            Duckie
+          </Link>
         </div>
-        {isLoggedIn() ? (
-          <div className="hidden lg:flex items-center space-x-6 text-back">
-            <div className="hover:text-darkBlue">Welcome, {userId}</div>
-            <a
-              onClick={logout}
-              className="px-8 py-3 font-bold rounded text-white bg-lightGreen hover:opacity-70"
-            >
-              Logout
-            </a>
-          </div>
-        ) : (
-          <div className="hidden lg:flex items-center space-x-6 text-back">
-            <Link to="/login" className="hover:text-darkBlue">
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="px-8 py-3 font-bold rounded text-white bg-lightGreen hover:opacity-70"
-            >
-              Signup
-            </Link>
-          </div>
-        )}
+        <div className="hidden lg:flex items-center space-x-6">
+          {isLoggedIn() ? (
+            <>
+              <span className="text-gray-700">Welcome, {userName}</span>
+              <button
+                onClick={logout}
+                className="px-4 py-2 bg-yellow-500 text-white font-semibold rounded hover:bg-yellow-400 transition duration-200"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="text-gray-700 hover:text-yellow-500 transition duration-200">
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="px-4 py-2 bg-yellow-500 text-white font-semibold rounded hover:bg-yellow-400 transition duration-200"
+              >
+                Signup
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

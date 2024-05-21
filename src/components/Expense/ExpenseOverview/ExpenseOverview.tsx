@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Statistic, Row, Col } from 'antd';
-import { IncomeGet } from '../../../models/IncomeDto';
-import { getIncomeListAPI } from '../../../services/IncomeService';
+import { Line } from '@ant-design/charts';
+import moment from 'moment';
+import { ReadExpenseDto } from '../../../models/ExpenseDto';
+import { getExpenseListAPI } from '../../../services/ExpenseService';
 
-const IncomeOverview: React.FC = () => {
+const ExpenseOverview: React.FC = () => {
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [totalEntries, setTotalEntries] = useState<number>(0);
   const [minAmount, setMinAmount] = useState<number>(0);
@@ -15,14 +17,14 @@ const IncomeOverview: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await getIncomeListAPI(localStorage.getItem('user') as string);
+      const response = await getExpenseListAPI(localStorage.getItem('user') as string);
       if (response) {
-        const incomes = response.data.result as IncomeGet[];
-        const total = calculateTotalAmount(incomes);
-        const min = calculateMinAmount(incomes);
-        const max = calculateMaxAmount(incomes);
+        const expenses = response.data.result as ReadExpenseDto[];
+        const total = calculateTotalAmount(expenses);
+        const min = calculateMinAmount(expenses);
+        const max = calculateMaxAmount(expenses);
         setTotalAmount(total);
-        setTotalEntries(incomes.length);
+        setTotalEntries(expenses.length);
         setMinAmount(min);
         setMaxAmount(max);
       }
@@ -31,23 +33,23 @@ const IncomeOverview: React.FC = () => {
     }
   };
 
-  const calculateTotalAmount = (incomes: IncomeGet[]) => {
-    return incomes.reduce((total, income) => total + income.amount, 0);
+  const calculateTotalAmount = (expenses: ReadExpenseDto[]) => {
+    return expenses.reduce((total, expense) => total + expense.amount, 0);
   };
 
-  const calculateMinAmount = (incomes: IncomeGet[]) => {
-    if (incomes.length === 0) return 0;
-    return Math.min(...incomes.map(income => income.amount));
+  const calculateMinAmount = (expenses: ReadExpenseDto[]) => {
+    if (expenses.length === 0) return 0;
+    return Math.min(...expenses.map(expense => expense.amount));
   };
 
-  const calculateMaxAmount = (incomes: IncomeGet[]) => {
-    if (incomes.length === 0) return 0;
-    return Math.max(...incomes.map(income => income.amount));
+  const calculateMaxAmount = (expenses: ReadExpenseDto[]) => {
+    if (expenses.length === 0) return 0;
+    return Math.max(...expenses.map(expense => expense.amount));
   };
 
   return (
     <div className="container mx-auto mt-8 p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Income Overview</h2>
+      <h2 className="text-lg font-semibold mb-4">Expense Overview</h2>
       <Row gutter={16}>
         <Col span={12}>
           <Statistic title="Total Amount" value={totalAmount} precision={2} />
@@ -66,4 +68,4 @@ const IncomeOverview: React.FC = () => {
   );
 };
 
-export default IncomeOverview;
+export default ExpenseOverview;

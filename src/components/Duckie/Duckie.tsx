@@ -4,15 +4,14 @@ interface Props {}
 
 const Duckie = (props: Props) => {
   return (
-    <section id="duckie">
-      <div className="container flex flex-col-reverse mx-auto p-8 lg:flex-row">
+    <section id="duckie" className="bg-yellow-200 bg-opacity-50">
+      <div className="container flex flex-col-reverse mx-auto p-8 lg:flex-row ">
         <div className="flex flex-col space-y-10 mb-44 m-10 lg:m-10 xl:m-20 lg:mt:16 lg:w-1/2 xl:mb-52">
           <h1 className="text-5xl font-bold text-center lg:text-6xl lg:max-w-md lg:text-left">
-            Financial data with no news.
+            Welcome To Duckie's Web.
           </h1>
           <p className="text-2xl text-center text-gray-400 lg:max-w-md lg:text-left">
-            Search relevant financial documents without fear mongering and fake
-            news.
+            Manage your personal finances intelligently.
           </p>
           <div className="mx-auto lg:mx-0">
             <Link
@@ -24,6 +23,7 @@ const Duckie = (props: Props) => {
           </div>
         </div>
         <div className="mb-24 mx-auto md:w-180 md:px-10 lg:mb-0 lg:w-1/2">
+          <img src="/duckie.png" alt="Your Image Alt Text" />
         </div>
       </div>
     </section>

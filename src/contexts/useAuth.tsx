@@ -9,6 +9,7 @@ import { LoginRequest, RegisterRequest, LoginResponse } from "../models/UserDto"
 type UserContextType = {
   userId: string | null;
   token: string | null;
+  userName: string | null;
   registerUser: (registerRequest:RegisterRequest) => void;
   loginUser: (LoginRequest:LoginRequest) => void;
   logout: () => void;
@@ -23,6 +24,7 @@ export const UserProvider = ({ children }: Props) => {
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUser] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>("");
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -51,13 +53,21 @@ export const UserProvider = ({ children }: Props) => {
     await loginAPI(loginRequest)
         .then((res) => {
             if (res) {
+              console.log(res?.data.isSuccess);
+              if(res?.data.isSuccess == false){
+                toast.warning(res?.data.message);
+              }
+              else
             try {
                 const response: LoginResponse = res?.data.result as LoginResponse;
                 localStorage.setItem("token", response.token);
                 const userObj = response.user;
                 localStorage.setItem("user", userObj.id);
+                localStorage.setItem("userName", userObj.fullName);
+                localStorage.setItem("email", userObj.email);
                 setToken(response.token);
                 setUser(userObj.id);
+                setUserName(userObj.fullName);
                 toast.success("Login Success!");
                 navigate("/dashboard");
             }
@@ -76,14 +86,17 @@ export const UserProvider = ({ children }: Props) => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("email");
     setUser(null);
     setToken("");
+    setUserName("");
     navigate("/");
   };
 
   return (
     <UserContext.Provider
-      value={{ loginUser, userId, token, logout, isLoggedIn, registerUser }}
+      value={{ userName, loginUser, userId, token, logout, isLoggedIn, registerUser }}
     >
       {isReady ? children : null}
     </UserContext.Provider>

@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import { createExpenseAPI } from "../../../services/ExpenseService";
 import { ExpensePost } from "../../../models/ExpenseDto";
+import { getBudgetNowAPI } from "../../../services/BudgetService";
 
 type Props = {};
 
@@ -19,7 +20,6 @@ const ExpenseCreate = (props: Props) => {
   const [form] = useForm<ExpenseCreate>();
 
   const onFinish = async (values: ExpenseCreate) => {
-
     try {
 
         const updateAccountResponse = await createExpenseAPI(
@@ -28,10 +28,15 @@ const ExpenseCreate = (props: Props) => {
               amount: values.amount,
               description: values.description,
               categoryName: values.categoryName,
-              date: dayjs().format("YYYY-MM-DD"),
+              date: dayjs().toISOString(), 
             } as unknown as ExpensePost
         )
-
+        await getBudgetNowAPI(localStorage.getItem('user') as string);
+        setinitExpense({
+          description: "",
+          amount: 0,
+          categoryName: ""
+        });
         if (updateAccountResponse) {
             notification.success({
                 message: ('CREATE'),
@@ -56,7 +61,7 @@ const ExpenseCreate = (props: Props) => {
       amount: 0,
       categoryName: ""
     });
-  }, [localStorage.getItem("user") as string]);
+  }, []);
 
   if (!initExpense) {
     return <h1>dang loading....</h1>;

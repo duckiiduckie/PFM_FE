@@ -3,8 +3,8 @@ export type IncomeGet = {
     amount: number;
     description: string;
     date: Date;
-    category: string;
-    user_id: string;
+    categoryName: string;
+    userId: string;
 };
 
 export type IncomePost = {
@@ -23,12 +23,12 @@ export type IncomeChart = {
 export type CategoryGet = {
     id: number;
     name: string;
-    user_id: string;
+    userId: string;
     incomes: IncomeGet[];
 };
 
 export type CategoryPost = {
-    user_id: string;
+    userId: string;
     name: string;
 };
 

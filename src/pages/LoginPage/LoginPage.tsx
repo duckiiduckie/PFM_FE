@@ -28,6 +28,7 @@ const LoginPage = (props: Props) => {
     try{
       const req: LoginRequest = { email: form.userName, password: form.password };
       loginUser(req);
+      localStorage.setItem("isIncomeModal","false")
     }
     catch(e){
       console.log(e);
@@ -87,7 +88,7 @@ const LoginPage = (props: Props) => {
               </div>
               <div className="flex items-center justify-between">
                 <a
-                  href="#"
+                  href="/forgot-password"
                   className="text-sm text-white font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Forgot password?

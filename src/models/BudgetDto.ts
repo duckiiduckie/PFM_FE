@@ -1,18 +1,22 @@
-import { CategoryGet } from "./ExpenseDto";
+import { CategoryBudgetDto, CategoryDto } from "./ExpenseDto";
 
 export type BudgetGet = {
     id: number;
-    total_amount: number;
-    start_date: Date;
-    end_date: Date;
-    used_amount: number;
-    categories: CategoryGet[];
-    user_id: string;
+    targetAmount: number;
+    startDate: Date;
+    endDate: Date;
+    usedAmount: number;
+    categories: CategoryBudgetDto[];
+    userId: string;
+    userEmail: string;
+    isMailSent: boolean;
 }
 
 export type BudgetPost = {
-    total_amount: number;
-    start_date: Date;
-    end_date: Date;
-    user_id: string;
+    targetAmount: number;
+    startDate: Date;
+    endDate: Date;
+    userId: string;
+    userEmail: string;
+    isMailSent: boolean;
 }

@@ -74,3 +74,27 @@ export const updateUserAPI = async (id:string, request: UserPut) => {
     handleError(error);
   }
 }
+
+export const resetPasswordAPI = async (request: any) => {
+  try {
+    const data = await axios.post(api + "auth/reset-password", {
+      email: request.email,
+      token: request.token,
+      password: request.password,
+    });
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const forgotPasswordAPI = async (email: any) => {
+  try {
+    const data = await axios.post(api + "auth/forgot-password", 
+      { mail: email },
+    );
+    return data;
+  } catch (error) {
+    handleError(error);
+  }
+};

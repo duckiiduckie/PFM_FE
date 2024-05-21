@@ -37,7 +37,7 @@ const RegisterPage = (props: Props) => {
         <div className="w-full bg-white rounded-lg shadow dark:border md:mb-20 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Sign in to your account
+              Sign up to your account
             </h1>
             <form
               className="space-y-4 md:space-y-6"
@@ -117,15 +117,6 @@ const RegisterPage = (props: Props) => {
               >
                 Sign up
               </button>
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don’t have an account yet?{" "}
-                <a
-                  href="/login"
-                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                >
-                  Sign in
-                </a>
-              </p>
             </form>
           </div>
         </div>

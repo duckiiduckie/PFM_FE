@@ -19,11 +19,6 @@ export type UserGet = {
     birthDay: string;
 };
 
-export type UserTmp = {
-    id: number;
-    email: string;
-    password: string;
-}
 
 export type UserPut = {
     email: string;
@@ -35,4 +30,10 @@ export type UserPut = {
 export type LoginResponse = {
     token: string;
     user: UserGet;
+};
+
+export type ResetPasswordDto = {
+    token: string;
+    password: string;
+    email: string;
 };
