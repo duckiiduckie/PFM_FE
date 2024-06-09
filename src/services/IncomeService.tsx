@@ -1,8 +1,8 @@
 import { AxiosError } from "axios"
-import { CategoryPost, IncomePost } from "../models/IncomeDto"
 import { instance } from "./axios"
 import { notification } from "antd"
 import { ResponeDto } from "../models/ResponeDto";
+import { CreateAdditionalIncome, CreateMainIncome } from "../models/IncomeDto";
 
 instance.interceptors.request.use(
   (config) => {
@@ -23,9 +23,59 @@ instance.interceptors.request.use(
 const api = instance.defaults.baseURL;
 
 
-export const getIncomeListAPI = async (id: string) => {
+export const getMainIncomeAPI = async (id: number) => {
+
   try {
-    const data = (await instance.get<ResponeDto>(api + "income/getincomes/" + id));
+    const data = await instance.get<ResponeDto>(api + "income/read-main-income/" + id);
+    if (data) {
+      const res = data.data;
+      if (res.isSuccess) {
+        return data;
+      } else {
+        notification.error({
+          message: "ERROR",
+          description: res.message,
+        });
+      }
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      notification.error({
+        message: "ERROR",
+        description: error.response?.data.info.message,
+      });
+    }
+  }
+}
+
+export const getMainIncomesAPI = async (userId: string) => {
+  try {
+    const data = await instance.get<ResponeDto>(api + "income/read-main-incomes/" + userId);
+    if (data) {
+      const res = data.data;
+      if (res.isSuccess) {
+        return data;
+      } else {
+        notification.error({
+          message: "ERROR",
+          description: res.message,
+        });
+      }
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      notification.error({
+        message: "ERROR",
+        description: error.response?.data.info.message,
+      });
+    }
+  }
+}
+
+
+export const getAdditionalIncomeAPI = async (id:number) => {
+  try {
+    const data = (await instance.get<ResponeDto>(api + "income/read-additional-income/" + id));
     if(data){
       
       const res = data.data
@@ -49,16 +99,14 @@ export const getIncomeListAPI = async (id: string) => {
   }
 }
 
-export const getIncomeAPI = async (id:number) => {
+export const getAdditionalIncomesAPI = async (userId: string) => {
   try {
-    const data = (await instance.get<ResponeDto>(api + "income/" + id));
-    if(data){
-      
-      const res = data.data
-      if(res.isSuccess){
-        return data
-      }
-      else{
+    const data = await instance.get<ResponeDto>(api + "income/read-additional-incomes/" + userId);
+    if (data) {
+      const res = data.data;
+      if (res.isSuccess) {
+        return data;
+      } else {
         notification.error({
           message: "ERROR",
           description: res.message,
@@ -75,9 +123,9 @@ export const getIncomeAPI = async (id:number) => {
   }
 }
 
-export const createIncomeAPI = async (request:IncomePost) => {
+export const createMainIncomeAPI = async (request:CreateMainIncome) => {
   try {
-    const data = await instance.post(api + "income", request);
+    const data = await instance.post(api + "income/create-main-income", request);
    if(data){
       
       const res = data.data
@@ -101,9 +149,9 @@ export const createIncomeAPI = async (request:IncomePost) => {
   }
 }
 
-export const updateIncomeAPI = async (id:number, request:IncomePost) => {
+export const createAdditionalIncomeAPI = async (request:CreateAdditionalIncome) => {
   try {
-    const data = await instance.put(api + "income/" + id, request);
+    const data = await instance.post(api + "income/create-additional-income", request);
     if(data){
       
       const res = data.data
@@ -127,9 +175,61 @@ export const updateIncomeAPI = async (id:number, request:IncomePost) => {
   }
 }
 
-export const deleteIncomeAPI = async (id:number) => {
+export const updateMainIncomeAPI = async (id:number, request:CreateMainIncome) => {
   try {
-    const data = await instance.delete(api + "income/" + id);
+    const data = await instance.put(api + "income/update-main-income/" + id, request);
+    if(data){
+      
+      const res = data.data
+      if(res.isSuccess){
+        return data
+      }
+      else{
+        notification.error({
+          message: "ERROR",
+          description: res.message,
+        });
+      }
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      notification.error({
+        message: "ERROR",
+        description: error.response?.data.info.message,
+      });
+    }
+  }
+}
+
+export const updateAdditionalIncomeAPI = async (id:number, request:CreateAdditionalIncome) => {
+  try {
+    const data = await instance.put(api + "income/update-additional-income/" + id, request);
+    if(data){
+      
+      const res = data.data
+      if(res.isSuccess){
+        return data
+      }
+      else{
+        notification.error({
+          message: "ERROR",
+          description: res.message,
+        });
+      }
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      notification.error({
+        message: "ERROR",
+        description: error.response?.data.info.message,
+      });
+    }
+  }
+}
+
+export const deleteMainIncomeAPI = async (id:number) => {
+  try {
+    const data = await instance.delete(api + "income/delete-main-income/" + id);
     if(data){
       
       const res = data.data
@@ -153,9 +253,9 @@ export const deleteIncomeAPI = async (id:number) => {
   }
 } 
 
-export const getCategoryListAPI = async (id: string) => {
+export const deleteAdditionalIncomeAPI = async (id:number) => {
   try {
-    const data = (await instance.get<ResponeDto>(api + "income/category/getcategories/" + id));
+    const data = await instance.delete(api + "income/delete-additional-income/" + id);
     if(data){
       
       const res = data.data
@@ -178,99 +278,3 @@ export const getCategoryListAPI = async (id: string) => {
     }
   }
 }
-
-export const getCategoryAPI = async (id: string) => {
-  try {
-    const data = await instance.get<ResponeDto>(api + "income/category/getcategories/" + id);
-    if (data) {
-      const res = data.data;
-      if (res.isSuccess) {
-        return data;
-      } else {
-        notification.error({
-          message: "ERROR",
-          description: res.message,
-        });
-      }
-    }
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      notification.error({
-        message: "ERROR",
-        description: error.response?.data.info.message,
-      });
-    }
-  }
-};
-
-export const createCategoryAPI = async (request: CategoryPost) => {
-  try {
-    const data = await instance.post(api + "income/category", request);
-    if (data) {
-      const res = data.data;
-      if (res.isSuccess) {
-        return data;
-      } else {
-        notification.error({
-          message: "ERROR",
-          description: res.message,
-        });
-      }
-    }
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      notification.error({
-        message: "ERROR",
-        description: error.response?.data.info.message,
-      });
-    }
-  }
-};
-
-export const updateCategoryAPI = async (id: number, request: CategoryPost) => {
-  try {
-    const data = await instance.put(api + "income/category/" + id, request);
-    if (data) {
-      const res = data.data;
-      if (res.isSuccess) {
-        return data;
-      } else {
-        notification.error({
-          message: "ERROR",
-          description: res.message,
-        });
-      }
-    }
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      notification.error({
-        message: "ERROR",
-        description: error.response?.data.info.message,
-      });
-    }
-  }
-};
-
-export const deleteCategoryAPI = async (id: number) => {
-  try {
-    const data = await instance.delete(api + "income/category/" + id);
-    if (data) {
-      const res = data.data;
-      if (res.isSuccess) {
-        return data;
-      } else {
-        notification.error({
-          message: "ERROR",
-          description: res.message,
-        });
-      }
-    }
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      notification.error({
-        message: "ERROR",
-        description: error.response?.data.info.message,
-      });
-    }
-  }
-};

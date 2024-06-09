@@ -1,27 +1,29 @@
 import React from 'react'
-import ExpenseCreate from './ExpenseCreate/ExpenseCreate'
+import DailyExpenseTable from './ExpenseTable/DailyExpenseTable'
+import FuturePlannedExpenseTable from './ExpenseTable/FuturePlannedExpenseTable'
+import AddDailyExpense from './CreatExpense/CreateDailyExpense'
+import AddFuturePlannedExpense from './CreatExpense/CreateFuturePlannedExpense'
 import ExpenseOverview from './ExpenseOverview/ExpenseOverview'
-import ExpenseTable from './ExpenseTable/ExpenseTable'
-import AddCategoryButton from './Category/AddCategory'
-import CategoryList from './Category/CategoryList'
+
 
 type Props = {}
 
 const Expense = (props: Props) => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <ExpenseOverview />
       
-      <div className="mt-4 border border-gray-300 shadow-md p-4 rounded-md">
-        <CategoryList />
-        <AddCategoryButton />
-      </div>
-      <div className="flex mt-8">
-        <div className="w-1/2 mr-4 border border-gray-300 shadow-md p-4 rounded-md">
-          <ExpenseTable />
+        <div className="mt-8 border border-gray-300 shadow-md p-4 rounded-md">
+          <ExpenseOverview/>
         </div>
-        <div className="w-1/2 ml-4 border border-gray-300 shadow-md p-4 rounded-md">
-          <ExpenseCreate />
+
+      <div className="flex mt-8 border border-gray-300 shadow-md p-4 rounded-md">
+        <div className="w-1/2 mr-4 border border-gray-300 shadow-md p-4 rounded-md">
+          <AddDailyExpense/>
+          <DailyExpenseTable/>
+        </div>
+        <div className="w-1/2 mr-4 border border-gray-300 shadow-md p-4 rounded-md">
+          <AddFuturePlannedExpense/>
+          <FuturePlannedExpenseTable/>
         </div>
       </div>
     </div>

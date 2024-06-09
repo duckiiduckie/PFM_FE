@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, DatePicker, Button, Popconfirm, message } from "antd";
-import { IncomeGet } from "../../../models/IncomeDto";
-import { getIncomeListAPI, deleteIncomeAPI } from "../../../services/IncomeService";
+import {
+  Table,
+  Input,
+  DatePicker,
+  Button,
+  Popconfirm,
+  message,
+  Modal,
+  Form,
+} from "antd";
+import { ReadMainIncome, CreateMainIncome } from "../../../models/IncomeDto";
+import {
+  getMainIncomesAPI,
+  deleteMainIncomeAPI,
+  updateMainIncomeAPI,
+} from "../../../services/IncomeService";
 import moment from "moment";
 import * as XLSX from "xlsx";
 import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
-import ModalUpdate from "./ModalUpdate";
 
-const IncomeTable: React.FC = () => {
-  const [data, setData] = useState<IncomeGet[]>([]);
+const { TextArea } = Input;
+
+const MainIncomeTable: React.FC = () => {
+  const [data, setData] = useState<ReadMainIncome[]>([]);
   const [searchText, setSearchText] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<moment.Moment | null>(null);
   const [selectedIncomeId, setSelectedIncomeId] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     fetchData();
@@ -21,9 +36,9 @@ const IncomeTable: React.FC = () => {
   const fetchData = async () => {
     try {
       const userId = localStorage.getItem("user") as string;
-      const response = await getIncomeListAPI(userId);
+      const response = await getMainIncomesAPI(userId);
       if (response) {
-        const incomes = response.data.result as IncomeGet[];
+        const incomes = response.data.result as ReadMainIncome[];
         setData(incomes);
       }
     } catch (error) {
@@ -45,17 +60,54 @@ const IncomeTable: React.FC = () => {
   const handleEditClick = (id: number) => {
     setSelectedIncomeId(id);
     setIsModalVisible(true);
-    localStorage.setItem("isIncomeModal", "true");
+    const selectedRecord = data.find((record) => record.id === id);
+    if (selectedRecord) {
+      form.setFieldsValue({
+        amount: selectedRecord.amount,
+        description: selectedRecord.description,
+        date: moment(selectedRecord.date),
+        name: selectedRecord.name,
+      });
+    }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteIncomeAPI(id);
+      await deleteMainIncomeAPI(id);
       message.success("Record deleted successfully");
       fetchData();
     } catch (error) {
       message.error("Error deleting record");
       console.error("Error deleting data:", error);
+    }
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    setSelectedIncomeId(null);
+    form.resetFields();
+  };
+
+  const handleModalOk = async () => {
+    try {
+      const values = await form.validateFields();
+      const updatedIncome: CreateMainIncome = {
+        ...values,
+        userId: localStorage.getItem("user") as string,
+      };
+      const response = await updateMainIncomeAPI(
+        selectedIncomeId as number,
+        updatedIncome
+      );
+      if (response && response.data.isSuccess) {
+        message.success("Record updated successfully");
+        setIsModalVisible(false);
+        fetchData();
+      } else {
+        message.error("Error updating record");
+      }
+    } catch (error) {
+      console.error("Error updating record:", error);
     }
   };
 
@@ -79,18 +131,18 @@ const IncomeTable: React.FC = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      render: (date: Date) => moment(date).format("YYYY-MM-DD HH:mm:ss"),
+      render: (date: Date) => moment(date).format("YYYY-MM-DD"),
     },
     {
-      title: "Category",
-      dataIndex: "categoryName",
-      key: "categoryName",
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Actions",
       key: "actions",
       render: (record: any) => (
-        <>
+        <div className="flex">
           <EditTwoTone
             className="text-blue-500 mr-2"
             twoToneColor="#5151e5"
@@ -104,7 +156,7 @@ const IncomeTable: React.FC = () => {
           >
             <DeleteTwoTone className="text-red-500" />
           </Popconfirm>
-        </>
+        </div>
       ),
     },
   ];
@@ -133,11 +185,7 @@ const IncomeTable: React.FC = () => {
           onChange={(e) => setSearchText(e.target.value)}
           className="mr-4 w-1/3"
         />
-        <Button
-          type="primary"
-          onClick={handleExportToFile}
-          className="mb-4"
-        >
+        <Button type="primary" onClick={handleExportToFile} className="mb-4">
           Export to Excel
         </Button>
       </div>
@@ -146,19 +194,47 @@ const IncomeTable: React.FC = () => {
         dataSource={filteredData}
         rowKey={(record) => record.id.toString()}
       />
-      {isModalVisible && selectedIncomeId !== null && (
-        <ModalUpdate
-          id={selectedIncomeId}
-          isShow={isModalVisible.toString()}
-          onClose={() => {
-            setIsModalVisible(false);
-            localStorage.setItem("isIncomeModal", "false");
-            fetchData(); // Refresh the data after closing the modal
-          }}
-        />
-      )}
+      <Modal
+        title="Edit Main Income"
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <Form form={form} layout="vertical" initialValues={{ remember: true }}>
+          <Form.Item
+            label="Amount"
+            name="amount"
+            rules={[{ required: true, message: "Please input the amount!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[
+              { required: true, message: "Please input the description!" },
+            ]}
+          >
+            <TextArea rows={4} />
+          </Form.Item>
+          <Form.Item
+            label="Date"
+            name="date"
+            rules={[{ required: true, message: "Please select the date!" }]}
+          >
+            <DatePicker />
+          </Form.Item>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input the name!" }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
 
-export default IncomeTable;
+export default MainIncomeTable;

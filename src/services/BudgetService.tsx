@@ -1,9 +1,8 @@
 import { AxiosError } from "axios"
 import { instance } from "./axios"
 import { notification } from "antd"
-import { ExpensePost } from "../models/ExpenseDto"
 import { ResponeDto } from "../models/ResponeDto"
-import { BudgetPost } from "../models/BudgetDto"
+import { CreateBudget } from "../models/BudgetDto"
 
 
 instance.interceptors.request.use(
@@ -24,10 +23,9 @@ instance.interceptors.request.use(
 )
 const api = instance.defaults.baseURL;
 
-
-export const getBudgetListAPI = async (id: string) => {
+export const getBudgetAPI = async (id:number) => {
   try {
-    const data = (await instance.get<ResponeDto>(api + "budget/getbudgets/" + id));
+    const data = (await instance.get<ResponeDto>(api + "budget/get-budget/" + id));
     if(data){
       
       const res = data.data
@@ -51,11 +49,59 @@ export const getBudgetListAPI = async (id: string) => {
   }
 }
 
-
-export const getBudgetAPI = async (id:number) => {
+export const getBudgetsAPI = async (userId: string) => {
   try {
-    const data = (await instance.get<ResponeDto>(api + "budget/" + id));
-    if(data){
+    const data = await instance.get<ResponeDto>(api + "budget/get-budgets/" + userId);
+    if (data) {
+      const res = data.data;
+      if (res.isSuccess) {
+        return data;
+      } else {
+        notification.error({
+          message: "ERROR",
+          description: res.message,
+        });
+      }
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      notification.error({
+        message: "ERROR",
+        description: error.response?.data.info.message,
+      });
+    }
+  }
+}
+
+export const getBudgetNowAPI = async (userId: string) => {
+  try {
+    const data = await instance.get<ResponeDto>(api + "budget/get-budget-now/" + userId);
+    if (data) {
+      const res = data.data;
+      if (res.isSuccess) {
+        return data;
+      } else {
+        notification.error({
+          message: "ERROR",
+          description: res.message,
+        });
+      }
+    }
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      notification.error({
+        message: "ERROR",
+        description: error.response?.data.info.message,
+      });
+    }
+  }
+}
+
+export const createBudgetAPI = async (request:CreateBudget) => {
+  try {
+    const data = await instance.post(api + "budget/create-budget", request);
+   if(data){
+      
       const res = data.data
       if(res.isSuccess){
         return data
@@ -77,11 +123,11 @@ export const getBudgetAPI = async (id:number) => {
   }
 }
 
-
-export const getBudgetNowAPI = async (userId:string) => {
+export const updateBudgetAPI = async (id:number, request:CreateBudget) => {
   try {
-    const data = (await instance.get<ResponeDto>(api + "budget/getbudgetnow/" + userId));
+    const data = await instance.put(api + "budget/update-budget/" + id, request);
     if(data){
+      
       const res = data.data
       if(res.isSuccess){
         return data
@@ -103,48 +149,9 @@ export const getBudgetNowAPI = async (userId:string) => {
   }
 }
 
-export const createBudgetAPI = async (request:BudgetPost) => {
+export const deleteBudgetAPI = async (id:number) => {
   try {
-    const data = await instance.post(api + "budget", request);
-    if(data){
-      const res = data.data
-      if(res.isSuccess){
-        return data
-      }
-      else{
-        notification.error({
-          message: "ERROR",
-          description: res.message,
-        });
-      }
-    }
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      notification.error({
-        message: "ERROR",
-        description: error.response?.data.info.message,
-      });
-    }
-  }
-}
-
-export const updateExpenseAPI = async (id:string, request:ExpensePost) => {
-  try {
-    const data = await instance.put(api + "expense/" + id, request);
-    return data;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-      notification.error({
-        message: "ERROR",
-        description: error.response?.data.info.message,
-      });
-    }
-  }
-}
-
-export const deleteBudgetAPI = async (id:string) => {
-  try {
-    const data = await instance.delete(api + "budget/" + id);
+    const data = await instance.delete(api + "budget/delete-budget/" + id);
     if(data){
       
       const res = data.data

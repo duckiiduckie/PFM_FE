@@ -1,38 +1,33 @@
-export type IncomeGet = {
+export type ReadMainIncome = {
     id: number;
-    amount: number;
-    description: string;
-    date: Date;
-    categoryName: string;
     userId: string;
+    description: string;
+    amount: number;
+    date: Date;
+    name: string;
 };
 
-export type IncomePost = {
+export type CreateMainIncome = {
+    userId: string;
+    description: string;
+    amount: number;
+    date: Date;
+    name: string;
+};
+
+export type ReadAdditionalIncome = {
+    id: number;
+    userId: string;
     amount: number;
     description: string;
     date: Date;
+    category:string;
+}
+
+export type CreateAdditionalIncome = {
+    userId: string;
+    date: Date;
+    description: string;
+    amount: number;
     category: string;
-    userId: string;
 };
-
-export type IncomeChart = {
-    date: Date;
-    amount: number;
-}
-
-export type CategoryGet = {
-    id: number;
-    name: string;
-    userId: string;
-    incomes: IncomeGet[];
-};
-
-export type CategoryPost = {
-    userId: string;
-    name: string;
-};
-
-export type CategoryChart = {
-    name: string;
-    amount: number;
-}

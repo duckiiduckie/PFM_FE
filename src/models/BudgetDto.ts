@@ -1,22 +1,38 @@
-import { CategoryBudgetDto, CategoryDto } from "./ExpenseDto";
 
-export type BudgetGet = {
-    id: number;
-    targetAmount: number;
-    startDate: Date;
-    endDate: Date;
-    usedAmount: number;
-    categories: CategoryBudgetDto[];
+export type CreateBudget = {
     userId: string;
+    amount: number;
+    date: Date;
     userEmail: string;
+    type: string;
     isMailSent: boolean;
+    essential: number;
+    want: number;
+    savingAndInvestment: number;
 }
 
-export type BudgetPost = {
-    targetAmount: number;
-    startDate: Date;
-    endDate: Date;
-    userId: string;
-    userEmail: string;
-    isMailSent: boolean;
+export type ReadBudget = {
+    id: number;
+  userId: string;
+  amount: number;
+  usedAmount: number;
+  date: Date;
+  userEmail: string;
+  type: string;
+  isMailSent: boolean;
+  essential: number;
+  savingAndInvestment: number;
+  want: number;
+  usedEssential: number;
+  usedSavingAndInvestment: number;
+  usedWant: number;
+}
+
+export enum Category{
+    Food,
+    Housing,
+    Transportation,
+    Utilities,
+    Health,
+    Other
 }

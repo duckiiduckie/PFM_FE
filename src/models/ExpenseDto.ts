@@ -1,46 +1,44 @@
-export type ReadExpenseDto = {
-    id: number;
+export type CreateDailyExpense = {
     userId: string;
     amount: number;
     description: string;
     date: Date;
-    categoryName: string;
+    category: Category;
+    type: string;
 };
 
-export type ExpensePost = {
+export type CreateFuturePlannedExpense = {
     userId: string;
     amount: number;
     description: string;
     date: Date;
-    category: string;
+    status: string;
 };
 
-export type ExpenseChart = {
+export type ReadDailyExpense = {
+    id:number;
+    userId: string;
     amount: number;
+    description: string;
     date: Date;
+    category: Category;
+    type: string;
 }
 
-export type CategoryDto = {
+export type ReadFuturePlannedExpense = {
     id: number;
-    name: string;
     userId: string;
-    expenses: ReadExpenseDto[];
-};
-
-export type CategoryBudgetDto = {
-    id: number;
-    name: string;
-    userId: string;
-    usedAmount: number;
-    expenses: ReadExpenseDto[];
-};
-
-export type CategoryPost = {
-    userId: string;
-    name: string;
-};
-
-export type CategoryChart = {
-    name: string;
     amount: number;
+    description: string;
+    date: Date;
+    status: string;
+};
+
+export enum Category{
+    Food,
+    Housing,
+    Transportation,
+    Utilities,
+    Health,
+    Other
 }

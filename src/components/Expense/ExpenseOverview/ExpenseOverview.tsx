@@ -1,67 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { Statistic, Row, Col } from 'antd';
-import { Line } from '@ant-design/charts';
-import moment from 'moment';
-import { ReadExpenseDto } from '../../../models/ExpenseDto';
-import { getExpenseListAPI } from '../../../services/ExpenseService';
+import React, { useState, useEffect } from "react";
+import { Statistic, Row, Col, Divider } from "antd";
+import { getDailyExpensesAPI, getFuturePlannedExpensesAPI } from "../../../services/ExpenseService";
+import { ReadDailyExpense, ReadFuturePlannedExpense } from "../../../models/ExpenseDto";
 
 const ExpenseOverview: React.FC = () => {
-  const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [totalEntries, setTotalEntries] = useState<number>(0);
-  const [minAmount, setMinAmount] = useState<number>(0);
-  const [maxAmount, setMaxAmount] = useState<number>(0);
+  const [dailyExpenseTotal, setDailyExpenseTotal] = useState<number>(0);
+  const [futurePlannedExpenseTotal, setFuturePlannedExpenseTotal] = useState<number>(0);
+  const [dailyExpenseCount, setDailyExpenseCount] = useState<number>(0);
+  const [futurePlannedExpenseCount, setFuturePlannedExpenseCount] = useState<number>(0);
 
   useEffect(() => {
-    fetchData();
+    fetchExpenseData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchExpenseData = async () => {
     try {
-      const response = await getExpenseListAPI(localStorage.getItem('user') as string);
-      if (response) {
-        const expenses = response.data.result as ReadExpenseDto[];
-        const total = calculateTotalAmount(expenses);
-        const min = calculateMinAmount(expenses);
-        const max = calculateMaxAmount(expenses);
-        setTotalAmount(total);
-        setTotalEntries(expenses.length);
-        setMinAmount(min);
-        setMaxAmount(max);
+      // Lấy dữ liệu chi phí hàng ngày
+      const dailyExpenseResponse = await getDailyExpensesAPI(localStorage.getItem("user") as string);
+      if (dailyExpenseResponse && dailyExpenseResponse.data) {
+        const dailyExpenses: ReadDailyExpense[] = dailyExpenseResponse.data.result as ReadDailyExpense[];
+        const dailyTotal: number = dailyExpenses.reduce((acc: number, expense: ReadDailyExpense) => acc + expense.amount, 0);
+        setDailyExpenseTotal(dailyTotal);
+        setDailyExpenseCount(dailyExpenses.length);
+      }
+
+      // Lấy dữ liệu chi phí dự định cho tương lai
+      const futurePlannedExpenseResponse = await getFuturePlannedExpensesAPI(localStorage.getItem("user") as string);
+      if (futurePlannedExpenseResponse && futurePlannedExpenseResponse.data) {
+        const futurePlannedExpenses: ReadFuturePlannedExpense[] = futurePlannedExpenseResponse.data.result as ReadFuturePlannedExpense[];
+        const futureTotal: number = futurePlannedExpenses.reduce((acc: number, expense: ReadFuturePlannedExpense) => acc + expense.amount, 0);
+        setFuturePlannedExpenseTotal(futureTotal);
+        setFuturePlannedExpenseCount(futurePlannedExpenses.length);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching expense data:", error);
     }
   };
 
-  const calculateTotalAmount = (expenses: ReadExpenseDto[]) => {
-    return expenses.reduce((total, expense) => total + expense.amount, 0);
-  };
-
-  const calculateMinAmount = (expenses: ReadExpenseDto[]) => {
-    if (expenses.length === 0) return 0;
-    return Math.min(...expenses.map(expense => expense.amount));
-  };
-
-  const calculateMaxAmount = (expenses: ReadExpenseDto[]) => {
-    if (expenses.length === 0) return 0;
-    return Math.max(...expenses.map(expense => expense.amount));
-  };
-
   return (
-    <div className="container mx-auto mt-8 p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-lg font-semibold mb-4">Expense Overview</h2>
-      <Row gutter={16}>
+    <div className="p-6 bg-white rounded-md shadow-md">
+      <h1 className="text-3xl font-semibold mb-4">Expense Overview</h1>
+      <Row gutter={[16, 16]}>
         <Col span={12}>
-          <Statistic title="Total Amount" value={totalAmount} precision={2} />
+          <Statistic title="Daily Expense Total" value={dailyExpenseTotal} precision={2} className="bg-gray-100 p-4 rounded-md" />
         </Col>
         <Col span={12}>
-          <Statistic title="Total Entries" value={totalEntries} />
+          <Statistic title="Future Planned Expense Total" value={futurePlannedExpenseTotal} precision={2} className="bg-gray-100 p-4 rounded-md" />
+        </Col>
+      </Row>
+      <Divider />
+      <Row gutter={[16, 16]}>
+        <Col span={12}>
+          <Statistic title="Number of Daily Expenses" value={dailyExpenseCount} className="bg-gray-100 p-4 rounded-md" />
         </Col>
         <Col span={12}>
-          <Statistic title="Min Amount" value={minAmount} precision={2} />
-        </Col>
-        <Col span={12}>
-          <Statistic title="Max Amount" value={maxAmount} precision={2} />
+          <Statistic title="Number of Future Planned Expenses" value={futurePlannedExpenseCount} className="bg-gray-100 p-4 rounded-md" />
         </Col>
       </Row>
     </div>
